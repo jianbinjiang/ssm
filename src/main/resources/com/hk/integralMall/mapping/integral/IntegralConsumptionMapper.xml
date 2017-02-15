@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hk.integralMall.mapper.integral.IntegralConsumptionMapper" >
+  <resultMap id="BaseResultMap" type="com.hk.integralMall.model.integral.IntegralConsumption" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userId" property="userid" jdbcType="VARCHAR" />
+    <result column="preSumpId" property="presumpid" jdbcType="INTEGER" />
+    <result column="orderId" property="orderid" jdbcType="VARCHAR" />
+    <result column="instructions" property="instructions" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="isEffective" property="iseffective" jdbcType="CHAR" />
+    <result column="ctime" property="ctime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userId, preSumpId, orderId, instructions, score, isEffective, ctime
+  </sql>
+  
+  <!--根据订单id判断是否已经插入了该记录 -->
+  <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from integral_consumption
+    where orderId = #{orderId,jdbcType=VARCHAR}
+  </select>
+  
+   
+   <!-- 根据用户ID查询消耗积分 -->
+   <select id="selectHisRecodesByUserId" resultType="com.hk.integralMall.vo.IntegralConsumptionVO"
+   			 parameterType="string" >
+    	SELECT * FROM(
+		(SELECT type.typeName AS instructions,ac.score,ac.ctime,1 AS tag FROM 
+		integral_acquire ac,integral_acquire_type type 
+		WHERE ac.acquireId = type.id AND ac.isEffective = 'Y' AND ac.userId = #{userId,jdbcType=VARCHAR}
+		)
+		UNION 
+		(SELECT sump.instructions,sump.score,sump.ctime,2 AS tag 
+		FROM integral_consumption sump WHERE sump.isEffective = 'Y' AND sump.userId = #{userId,jdbcType=VARCHAR})
+		) temp ORDER BY temp.ctime DESC
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from integral_consumption
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.hk.integralMall.model.integral.IntegralConsumption" >
+    insert into integral_consumption ( userId, preSumpId, 
+      orderId, instructions, score)
+    values ( #{userid,jdbcType=VARCHAR}, #{presumpid,jdbcType=INTEGER}, 
+      #{orderid,jdbcType=VARCHAR}, #{instructions,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hk.integralMall.model.integral.IntegralConsumption" >
+    insert into integral_consumption
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="presumpid != null" >
+        preSumpId,
+      </if>
+      <if test="orderid != null" >
+        orderId,
+      </if>
+      <if test="instructions != null" >
+        instructions,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="iseffective != null" >
+        isEffective,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="presumpid != null" >
+        #{presumpid,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="instructions != null" >
+        #{instructions,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="iseffective != null" >
+        #{iseffective,jdbcType=CHAR},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hk.integralMall.model.integral.IntegralConsumption" >
+    update integral_consumption
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="presumpid != null" >
+        preSumpId = #{presumpid,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        orderId = #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="instructions != null" >
+        instructions = #{instructions,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="iseffective != null" >
+        isEffective = #{iseffective,jdbcType=CHAR},
+      </if>
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hk.integralMall.model.integral.IntegralConsumption" >
+    update integral_consumption
+    set userId = #{userid,jdbcType=VARCHAR},
+      preSumpId = #{presumpid,jdbcType=INTEGER},
+      orderId = #{orderid,jdbcType=VARCHAR},
+      instructions = #{instructions,jdbcType=VARCHAR},
+      score = #{score,jdbcType=INTEGER},
+      isEffective = #{iseffective,jdbcType=CHAR},
+      ctime = #{ctime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

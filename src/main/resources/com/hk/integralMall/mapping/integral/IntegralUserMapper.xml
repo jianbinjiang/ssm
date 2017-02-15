@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hk.integralMall.mapper.integral.IntegralUserMapper" >
+  <resultMap id="BaseResultMap" type="com.hk.integralMall.model.integral.IntegralUser" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userId" property="userid" jdbcType="VARCHAR" />
+    <result column="userName" property="username" jdbcType="VARCHAR" />
+    <result column="telPhone" property="telphone" jdbcType="VARCHAR" />
+    <result column="yikeCode" property="yikecode" jdbcType="VARCHAR" />
+    <result column="pastTime" property="pasttime" jdbcType="VARCHAR" />
+    <result column="pastCount" property="pastcount" jdbcType="TINYINT" />
+    <result column="totalScore" property="totalscore" jdbcType="INTEGER" />
+    <result column="ctime" property="ctime" jdbcType="VARCHAR" />
+    <result column="failureTime" property="failureTime" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, userId, userName, telPhone, yikeCode, pastTime, pastCount, totalScore, 
+    ctime,failureTime
+  </sql>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from integral_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <!-- 根据userId查询 -->
+   <select id="selectByUserId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from integral_user
+    where userId = #{userId,jdbcType=VARCHAR}
+  </select>
+  
+  
+  
+   <!-- 根据userId查询 是否已经签到-->
+   <select id="selectByUserIdForSignIn" resultType="int" parameterType="java.lang.String" >
+     SELECT count(1) FROM integral_user WHERE TO_DAYS(pastTime) = to_days(now()) AND  userId = #{userId,jdbcType=VARCHAR}
+  </select>
+  
+  
+  <!--  修改用户的总积分 -->
+  <update id="updateByUserId" parameterType="java.util.Map" >
+    update integral_user
+    set 
+      totalScore = totalScore - #{totalScore,jdbcType=INTEGER}
+    where userId = #{userId,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 执行签到流程 -->
+  <select id="execSingedProcess" parameterType="java.util.Map" statementType="CALLABLE" resultType="map">
+    <![CDATA[
+   			{call YK_Proc_ContinuousSignIn(
+    			#{uid,mode=IN,jdbcType=VARCHAR},
+    			#{status,mode=OUT,jdbcType=TINYINT},
+    			#{plus,mode=OUT,jdbcType=TINYINT},
+    			#{credits,mode=OUT,jdbcType=TINYINT},
+    			#{errMsg,mode=OUT,jdbcType=VARCHAR}
+		    )} 
+    ]]>
+  </select>
+  
+  <!-- 查询签到关联数据 -->
+  <select id="querySignInRelateData" parameterType="java.util.Map" statementType="CALLABLE">
+    <![CDATA[
+   			{call YK_Proc_GetSignInRelateData(
+    			#{uId,mode=IN,jdbcType=VARCHAR},
+			    #{toDayScore,mode=OUT,jdbcType=TINYINT},
+			    #{tomorrowScore,mode=OUT,jdbcType=TINYINT},
+			    #{signCount,mode=OUT,jdbcType=TINYINT}
+		    )} 
+    ]]>
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from integral_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  
+  <insert id="insert" parameterType="com.hk.integralMall.model.integral.IntegralUser" >
+    insert into integral_user ( userId, userName, 
+     telPhone, yikeCode, 
+      failureTime)
+    values (#{userid,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, 
+       #{telphone,jdbcType=VARCHAR}, #{yikecode,jdbcType=VARCHAR}, 
+      #{failureTime,jdbcType=VARCHAR})
+  </insert>
+  
+  
+  <insert id="insertSelective" parameterType="com.hk.integralMall.model.integral.IntegralUser" >
+    insert into integral_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="username != null" >
+        userName,
+      </if>
+      <if test="telphone != null" >
+        telPhone,
+      </if>
+      <if test="yikecode != null" >
+        yikeCode,
+      </if>
+      <if test="pasttime != null" >
+        pastTime,
+      </if>
+      <if test="pastcount != null" >
+        pastCount,
+      </if>
+      <if test="totalscore != null" >
+        totalScore,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+       <if test="failureTime != null" >
+        failureTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="telphone != null" >
+        #{telphone,jdbcType=VARCHAR},
+      </if>
+      <if test="yikecode != null" >
+        #{yikecode,jdbcType=VARCHAR},
+      </if>
+      <if test="pasttime != null" >
+        #{pasttime,jdbcType=VARCHAR},
+      </if>
+      <if test="pastcount != null" >
+        #{pastcount,jdbcType=TINYINT},
+      </if>
+      <if test="totalscore != null" >
+        #{totalscore,jdbcType=INTEGER},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=VARCHAR},
+      </if>
+      <if test="failureTime != null" >
+        #{failureTime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.hk.integralMall.model.integral.IntegralUser" >
+    update integral_user
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null" >
+        userName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="telphone != null" >
+        telPhone = #{telphone,jdbcType=VARCHAR},
+      </if>
+      <if test="yikecode != null" >
+        yikeCode = #{yikecode,jdbcType=VARCHAR},
+      </if>
+      <if test="pasttime != null" >
+        pastTime = #{pasttime,jdbcType=VARCHAR},
+      </if>
+      <if test="pastcount != null" >
+        pastCount = #{pastcount,jdbcType=TINYINT},
+      </if>
+      <if test="totalscore != null" >
+        totalScore = #{totalscore,jdbcType=INTEGER},
+      </if>
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=VARCHAR},
+      </if>
+       <if test="failureTime != null" >
+        failureTime = #{failureTime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.hk.integralMall.model.integral.IntegralUser" >
+    update integral_user
+    set userId = #{userid,jdbcType=VARCHAR},
+      userName = #{username,jdbcType=VARCHAR},
+      telPhone = #{telphone,jdbcType=VARCHAR},
+      yikeCode = #{yikecode,jdbcType=VARCHAR},
+      pastTime = #{pasttime,jdbcType=VARCHAR},
+      pastCount = #{pastcount,jdbcType=TINYINT},
+      totalScore = #{totalscore,jdbcType=INTEGER},
+      ctime = #{ctime,jdbcType=VARCHAR},
+      failureTime = #{failureTime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+  <!-- 年度积分清零 -->
+  <update id="updateIntegralReset" parameterType="string" >
+	    UPDATE integral_user SET totalScore = 0 
+	    WHERE TO_DAYS(ctime) = TO_DAYS(failureTime) 
+	    AND userId = #{userId,jdbcType=VARCHAR}
+  </update>
+</mapper>

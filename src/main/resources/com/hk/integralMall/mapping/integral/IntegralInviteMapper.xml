@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hk.integralMall.mapper.integral.IntegralInviteMapper" >
+  <resultMap id="BaseResultMap" type="com.hk.integralMall.model.integral.IntegralInvite" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userId" property="userid" jdbcType="VARCHAR" />
+    <result column="inviteCode" property="invitecode" jdbcType="VARCHAR" />
+    <result column="shareTravel" property="sharetravel" jdbcType="INTEGER" />
+    <result column="inviteUA" property="inviteUA" jdbcType="VARCHAR" />
+    <result column="inviteId" property="inviteid" jdbcType="VARCHAR" />
+    <result column="getStatus" property="getstatus" jdbcType="TINYINT" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userId, inviteCode, shareTravel, inviteUA, inviteId, getStatus, ctime
+  </sql>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from integral_invite
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+  <!-- 查询是否分享邀请过 -->
+  <select id="selectIsShareByUserId" resultMap="BaseResultMap" parameterType="string" >
+    select 
+    <include refid="Base_Column_List" />
+    from integral_invite
+    where userId = #{userId,jdbcType=VARCHAR} AND shareTravel != 0 AND inviteId IS NULL
+  </select>
+  
+  
+  
+  <!-- 执行邀请完成注册流程 -->
+  <select id="execFinishInvite" parameterType="java.util.Map" statementType="CALLABLE" resultType="map">
+    <![CDATA[
+   			{call YK_Proc_ShareInvite(
+			    #{inviteUId,mode=IN,jdbcType=VARCHAR},
+			    #{msgCode,mode=OUT,jdbcType=VARCHAR},
+			    #{msgContext,mode=OUT,jdbcType=VARCHAR}
+		    )} 
+    ]]>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from integral_invite
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hk.integralMall.model.integral.IntegralInvite" >
+    insert into integral_invite (userId, inviteCode, 
+      inviteUA, inviteId)
+    values (#{userid,jdbcType=VARCHAR}, #{invitecode,jdbcType=VARCHAR}, 
+     #{inviteUA,jdbcType=VARCHAR}, #{inviteid,jdbcType=VARCHAR})
+  </insert>
+  
+  
+  <insert id="insertSelective" parameterType="com.hk.integralMall.model.integral.IntegralInvite" >
+    insert into integral_invite
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="invitecode != null" >
+        inviteCode,
+      </if>
+      <if test="sharetravel != null and sharetravel != 0" >
+        shareTravel,
+      </if>
+      <if test="inviteUA != null" >
+        inviteUA,
+      </if>
+      <if test="inviteid != null" >
+        inviteId,
+      </if>
+      <if test="getstatus != null and getstatus != 0" >
+        getStatus,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="invitecode != null" >
+        #{invitecode,jdbcType=VARCHAR},
+      </if>
+      <if test="sharetravel != null " >
+        #{sharetravel,jdbcType=INTEGER},
+      </if>
+      <if test="inviteUA != null" >
+        #{inviteUA,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteid != null" >
+        #{inviteid,jdbcType=VARCHAR},
+      </if>
+      <if test="getstatus != null and getstatus != 0" >
+        #{getstatus,jdbcType=TINYINT},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.hk.integralMall.model.integral.IntegralInvite" >
+    update integral_invite
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="invitecode != null" >
+        inviteCode = #{invitecode,jdbcType=VARCHAR},
+      </if>
+      <if test="sharetravel != null" >
+        shareTravel = #{sharetravel,jdbcType=INTEGER},
+      </if>
+      <if test="inviteUA != null" >
+        inviteUA = #{inviteUA,jdbcType=VARCHAR},
+      </if>
+      <if test="inviteid != null" >
+        inviteId = #{inviteid,jdbcType=VARCHAR},
+      </if>
+      <if test="getstatus != null" >
+        getStatus = #{getstatus,jdbcType=TINYINT},
+      </if>
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.hk.integralMall.model.integral.IntegralInvite" >
+    update integral_invite
+    set userId = #{userid,jdbcType=VARCHAR},
+      inviteCode = #{invitecode,jdbcType=VARCHAR},
+      shareTravel = #{sharetravel,jdbcType=INTEGER},
+      inviteUA = #{inviteUA,jdbcType=VARCHAR},
+      inviteId = #{inviteid,jdbcType=VARCHAR},
+      getStatus = #{getstatus,jdbcType=TINYINT},
+      ctime = #{ctime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  
+  <!-- 更新用户分享次数 -->
+  <update id="updateShareTravelByConditions" parameterType="com.hk.integralMall.model.integral.IntegralInvite" >
+    update integral_invite set shareTravel = shareTravel + 1,
+    inviteCode = #{invitecode,jdbcType=VARCHAR},
+    inviteUA = #{inviteUA,jdbcType=VARCHAR} 
+    where userId = #{userid,jdbcType=VARCHAR} AND shareTravel != 0 AND inviteId IS NULL
+  </update>
+</mapper>

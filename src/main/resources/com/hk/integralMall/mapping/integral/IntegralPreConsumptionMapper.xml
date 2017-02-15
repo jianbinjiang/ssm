@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hk.integralMall.mapper.integral.IntegralPreConsumptionMapper" >
+  <resultMap id="BaseResultMap" type="com.hk.integralMall.model.integral.IntegralPreConsumption" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userId" property="userid" jdbcType="VARCHAR" />
+    <result column="orderId" property="orderid" jdbcType="VARCHAR" />
+    <result column="instructions" property="instructions" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="isStatement" property="isstatement" jdbcType="BIT" />
+    <result column="resultStatus" property="resultstatus" jdbcType="BIT" />
+    <result column="isEffective" property="iseffective" jdbcType="CHAR" />
+    <result column="ctime" property="ctime" jdbcType="VARCHAR" />
+    <result column="utime" property="utime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userId, orderId, instructions, score, isStatement, resultStatus, isEffective, 
+    ctime, utime
+  </sql>
+  <select id="selectByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from integral_pre_consumption
+    where orderId = #{orderId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from integral_pre_consumption
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hk.integralMall.model.integral.IntegralPreConsumption" >
+    insert into integral_pre_consumption (id, userId, orderId, 
+      instructions, score, isStatement, 
+      resultStatus, isEffective, ctime, 
+      utime)
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, 
+      #{instructions,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER}, #{isstatement,jdbcType=BIT}, 
+      #{resultstatus,jdbcType=BIT}, #{iseffective,jdbcType=CHAR}, #{ctime,jdbcType=VARCHAR}, 
+      #{utime,jdbcType=VARCHAR})
+  </insert>
+  <!--  添加一条欲扣积分记录 -->
+  <insert id="insertPreConsumIntegral" parameterType="com.hk.integralMall.model.integral.IntegralPreConsumption" >
+    insert into integral_pre_consumption (userId, orderId, 
+      instructions, score, 
+      resultStatus)
+    values (#{userid,jdbcType=VARCHAR}, #{orderid,jdbcType=VARCHAR}, 
+      #{instructions,jdbcType=VARCHAR}, #{score,jdbcType=INTEGER},
+      #{resultstatus,jdbcType=BIT})
+  </insert>
+   <update id="updateByOrderId" parameterType="java.util.Map" >
+    update integral_pre_consumption
+    set 
+      isStatement = #{isStatement,jdbcType=BIT},
+      resultStatus = #{resultStatus,jdbcType=BIT}   
+    where orderId = #{orderId,jdbcType=VARCHAR}
+  </update>
+  
+  <insert id="insertSelective" parameterType="com.hk.integralMall.model.integral.IntegralPreConsumption" >
+    insert into integral_pre_consumption
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="orderid != null" >
+        orderId,
+      </if>
+      <if test="instructions != null" >
+        instructions,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="isstatement != null" >
+        isStatement,
+      </if>
+      <if test="resultstatus != null" >
+        resultStatus,
+      </if>
+      <if test="iseffective != null" >
+        isEffective,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+      <if test="utime != null" >
+        utime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="instructions != null" >
+        #{instructions,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="isstatement != null" >
+        #{isstatement,jdbcType=BIT},
+      </if>
+      <if test="resultstatus != null" >
+        #{resultstatus,jdbcType=BIT},
+      </if>
+      <if test="iseffective != null" >
+        #{iseffective,jdbcType=CHAR},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=VARCHAR},
+      </if>
+      <if test="utime != null" >
+        #{utime,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hk.integralMall.model.integral.IntegralPreConsumption" >
+    update integral_pre_consumption
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="orderid != null" >
+        orderId = #{orderid,jdbcType=VARCHAR},
+      </if>
+      <if test="instructions != null" >
+        instructions = #{instructions,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="isstatement != null" >
+        isStatement = #{isstatement,jdbcType=BIT},
+      </if>
+      <if test="resultstatus != null" >
+        resultStatus = #{resultstatus,jdbcType=BIT},
+      </if>
+      <if test="iseffective != null" >
+        isEffective = #{iseffective,jdbcType=CHAR},
+      </if>
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=VARCHAR},
+      </if>
+      <if test="utime != null" >
+        utime = #{utime,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hk.integralMall.model.integral.IntegralPreConsumption" >
+    update integral_pre_consumption
+    set userId = #{userid,jdbcType=VARCHAR},
+      orderId = #{orderid,jdbcType=VARCHAR},
+      instructions = #{instructions,jdbcType=VARCHAR},
+      score = #{score,jdbcType=INTEGER},
+      isStatement = #{isstatement,jdbcType=BIT},
+      resultStatus = #{resultstatus,jdbcType=BIT},
+      isEffective = #{iseffective,jdbcType=CHAR},
+      ctime = #{ctime,jdbcType=VARCHAR},
+      utime = #{utime,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

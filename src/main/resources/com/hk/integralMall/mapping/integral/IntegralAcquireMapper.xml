@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hk.integralMall.mapper.integral.IntegralAcquireMapper" >
+  <resultMap id="BaseResultMap" type="com.hk.integralMall.model.integral.IntegralAcquire" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userId" property="userid" jdbcType="VARCHAR" />
+    <result column="acquireId" property="acquireid" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="INTEGER" />
+    <result column="isEffective" property="iseffective" jdbcType="CHAR" />
+    <result column="ctime" property="ctime" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    id, userId, acquireId, score, isEffective, ctime
+  </sql>
+  
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from integral_acquire
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 查询签到日历数据 -->
+    <select id="selectByAcquireType" resultType="string"
+     parameterType="Map">
+    select 
+    group_concat(DATE_FORMAT(ctime , '%Y-%m-%d')) 
+    from integral_acquire 
+    where userId = #{userId,jdbcType=VARCHAR} 
+    and isEffective = 'Y' AND DATE_FORMAT(ctime, '%Y%m')  = #{month,jdbcType=VARCHAR} ORDER BY ctime DESC
+  </select>
+  
+  <!-- 根据用户查询积分记录 -->
+  <select id="selectByUserId" resultType="string"
+     parameterType="string">
+	select CONCAT_WS(',',type.typeName,ac.ctime,ac.score) 
+	from integral_acquire ac,integral_acquire_type type where ac.acquireId = type.id 
+	AND ac.isEffective = 'Y' AND ac.userId = #{userId,jdbcType=VARCHAR}  ORDER BY ac.ctime DESC
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from integral_acquire
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hk.integralMall.model.integral.IntegralAcquire" >
+    insert into integral_acquire (id, userId, acquireId, 
+      score, isEffective, ctime
+      )
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=VARCHAR}, #{acquireid,jdbcType=INTEGER}, 
+      #{score,jdbcType=INTEGER}, #{iseffective,jdbcType=CHAR}, #{ctime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hk.integralMall.model.integral.IntegralAcquire" >
+    insert into integral_acquire
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="acquireid != null" >
+        acquireId,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="iseffective != null" >
+        isEffective,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="acquireid != null" >
+        #{acquireid,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=INTEGER},
+      </if>
+      <if test="iseffective != null" >
+        #{iseffective,jdbcType=CHAR},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hk.integralMall.model.integral.IntegralAcquire" >
+    update integral_acquire
+    <set >
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="acquireid != null" >
+        acquireId = #{acquireid,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=INTEGER},
+      </if>
+      <if test="iseffective != null" >
+        isEffective = #{iseffective,jdbcType=CHAR},
+      </if>
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hk.integralMall.model.integral.IntegralAcquire" >
+    update integral_acquire
+    set userId = #{userid,jdbcType=VARCHAR},
+      acquireId = #{acquireid,jdbcType=INTEGER},
+      score = #{score,jdbcType=INTEGER},
+      isEffective = #{iseffective,jdbcType=CHAR},
+      ctime = #{ctime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hk.integralMall.mapper.integral.IntegralAcquireTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.hk.integralMall.model.integral.IntegralAcquireType" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="typeName" property="typename" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="TINYINT" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="isEffective" property="iseffective" jdbcType="CHAR" />
+    <result column="ctime" property="ctime" jdbcType="TIMESTAMP" />
+    <result column="utime" property="utime" jdbcType="TIMESTAMP" />
+    <result column="cuser" property="cuser" jdbcType="VARCHAR" />
+    <result column="uuser" property="uuser" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, typeName, score, description, isEffective, ctime, utime, cuser, uuser
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from integral_acquire_Type
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from integral_acquire_Type
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hk.integralMall.model.integral.IntegralAcquireType" >
+    insert into integral_acquire_Type (id, typeName, score, 
+      description, isEffective, ctime, 
+      utime, cuser, uuser
+      )
+    values (#{id,jdbcType=INTEGER}, #{typename,jdbcType=VARCHAR}, #{score,jdbcType=TINYINT}, 
+      #{description,jdbcType=VARCHAR}, #{iseffective,jdbcType=CHAR}, #{ctime,jdbcType=TIMESTAMP}, 
+      #{utime,jdbcType=TIMESTAMP}, #{cuser,jdbcType=VARCHAR}, #{uuser,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hk.integralMall.model.integral.IntegralAcquireType" >
+    insert into integral_acquire_Type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="typename != null" >
+        typeName,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="iseffective != null" >
+        isEffective,
+      </if>
+      <if test="ctime != null" >
+        ctime,
+      </if>
+      <if test="utime != null" >
+        utime,
+      </if>
+      <if test="cuser != null" >
+        cuser,
+      </if>
+      <if test="uuser != null" >
+        uuser,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="typename != null" >
+        #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=TINYINT},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="iseffective != null" >
+        #{iseffective,jdbcType=CHAR},
+      </if>
+      <if test="ctime != null" >
+        #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="utime != null" >
+        #{utime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuser != null" >
+        #{cuser,jdbcType=VARCHAR},
+      </if>
+      <if test="uuser != null" >
+        #{uuser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hk.integralMall.model.integral.IntegralAcquireType" >
+    update integral_acquire_Type
+    <set >
+      <if test="typename != null" >
+        typeName = #{typename,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=TINYINT},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="iseffective != null" >
+        isEffective = #{iseffective,jdbcType=CHAR},
+      </if>
+      <if test="ctime != null" >
+        ctime = #{ctime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="utime != null" >
+        utime = #{utime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cuser != null" >
+        cuser = #{cuser,jdbcType=VARCHAR},
+      </if>
+      <if test="uuser != null" >
+        uuser = #{uuser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hk.integralMall.model.integral.IntegralAcquireType" >
+    update integral_acquire_Type
+    set typeName = #{typename,jdbcType=VARCHAR},
+      score = #{score,jdbcType=TINYINT},
+      description = #{description,jdbcType=VARCHAR},
+      isEffective = #{iseffective,jdbcType=CHAR},
+      ctime = #{ctime,jdbcType=TIMESTAMP},
+      utime = #{utime,jdbcType=TIMESTAMP},
+      cuser = #{cuser,jdbcType=VARCHAR},
+      uuser = #{uuser,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
